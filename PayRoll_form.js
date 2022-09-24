@@ -1,3 +1,7 @@
+let isUpdate=false;
+let employeePayrollobj=
+{};
+
 window.addEventListener('DOMContentLoaded',(event)=>{
     const name=document.querySelector('#name');
     const textError = document.querySelector('.text-error');
@@ -26,7 +30,48 @@ window.addEventListener('DOMContentLoaded',(event)=>{
     {
         output.textContent = salary.value;
     })
+    checkForUpdate();
 });
+
+const checkForUpdate=()=>
+{
+    const employeePayrollJSON=localStorage.getItem('editEmp');
+    isUpdate=employeePayrollJSON?true:false;
+    if(!isUpdate) return;
+    employeePayrollobj=JSON.parse(employeePayrollJSON);
+    setForm();
+}
+
+const setForm=()=>
+{
+    setValue('#name',employeePayrollobj._name);
+    setSelectedValues('[name=profile]',employeePayrollobj._profilePic);
+
+}
+
+const setSelectedValues=(propertValue,value)=>
+{
+    let allItems=document.querySelectorAll(propertValue);
+    allItems.forEach(item =>
+        {
+            if(Array.isArray(value))
+            {
+                if(value.includes(item.value))
+                {
+                    item.checked=true;
+                }
+               
+            }
+            else if(item.value===value)
+            item.checked=true;
+        });
+}
+
+const setValue=(id,value)=>
+{
+const element=document.querySelector(id);
+element.value=value;
+}
 
 
 function createAndUpdateStorage(employeePayRollData)
@@ -112,7 +157,7 @@ const getSelectedValues=(propertyValue)=>{
 
 const resetform=()=>
 {
-    setvalue('#name', '');
+    setValue('#name', '');
     unsetSelectedValues('[name=profile]');
     unsetSelectedValues('[name=gender]');
     unsetSelectedValues('[name=department]');
@@ -136,8 +181,3 @@ const element = document.querySelector(id);
 element.textContent = value;
 }
 
-const setValue=(id,value)=>
-{
-    const element=document.querySelector(id);
-   element.value=value;
-}
